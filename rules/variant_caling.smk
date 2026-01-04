@@ -29,7 +29,10 @@ rule snpeff_annotate_vcf:
     container:
         "docker://quay.io/biocontainers/snpeff:5.1--hdfd78af_4"
     shell:
-        "snpEff -Xmx4g -csvStats {output.stats} {config[snpeff_db]} {input.vcf} > {output.vcf}"
+        """
+        snpEff download -dataDir resources/snpeff_data -v GRCh38.86
+        snpEff -Xmx4g -csvStats {output.stats} {config[snpeff_db]} {input.vcf} > {output.vcf}
+        """
 
 
 rule unpack_annotation:
