@@ -1,0 +1,3 @@
+samples: samples.tsv
+genome: resources/genome.fasta
+snpeff_db: GRCh38.86

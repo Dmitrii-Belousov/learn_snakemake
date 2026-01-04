@@ -1,0 +1,12 @@
+resources/
+results/
+logs/
+benchmarks/
+*.png
+.snakemake/
+.DS_Store/
+.ipynb_checkpoints/
+*.fastq.gz
+*.fasta
+*.fa
+data/
