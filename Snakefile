@@ -8,25 +8,28 @@ samples_table = pd.read_csv(
 
 samples_list = samples_table.index.to_list()
 
-def get_fastq(wildcards):
-    return {
-        "r1": samples_table.loc[wildcards.sample, "fq1"],
-        "r2": samples_table.loc[wildcards.sample, "fq2"]
-    }
+# TO LEGACY
 
-DOCKER_WRAPPER = "docker run --platform linux/amd64 --rm -v $(pwd):/io -w /io {image} {cmd}"
+# def get_fastq(wildcards):
+#     return {
+#         "r1": samples_table.loc[wildcards.sample, "fq1"],
+#         "r2": samples_table.loc[wildcards.sample, "fq2"]
+#     }
 
-def get_docker_cmd(image, cmd):
-    return DOCKER_WRAPPER.format(image=image, cmd=cmd)
+# DOCKER_WRAPPER = "docker run --platform linux/amd64 --rm -v $(pwd):/io -w /io {image} {cmd}"
+
+# def get_docker_cmd(image, cmd):
+#     return DOCKER_WRAPPER.format(image=image, cmd=cmd)
 
 
 rule all:
     input:
-        expand("results/{sample}.vcf", sample=samples_list),
+        expand("results/{sample}/{sample}.vcf", sample=samples_list),
         "results/multiqc_report.html",
-        expand("results/{sample}.variants.tsv", sample=samples_list)
+        expand("results/{sample}/{sample}.variants.tsv", sample=samples_list)
 
 
+include: "rules/downloaders.smk"
 include: 'rules/qc.smk'
 include: 'rules/mapping.smk'
 include: 'rules/variant_caling.smk'
