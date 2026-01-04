@@ -11,11 +11,10 @@ rule freebayes:
         "logs/freebayes/{sample}.log"
     benchmark:
         "benchmarks/freebayes/{sample}.tsv"
+    container:
+        "docker://quay.io/biocontainers/freebayes:1.3.6--hb089aa1_0"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/freebayes:1.3.6--hb089aa1_0",
-            cmd="freebayes -f {input.ref} {input.bam} > {output}"
-        )
+        "freebayes -f {input.ref} {input.bam} > {output}"
 
 
 rule snpeff_annotate_vcf:
@@ -27,11 +26,10 @@ rule snpeff_annotate_vcf:
     threads: 1
     resources:
         mem_mb = 4096
+    container:
+        "docker://quay.io/biocontainers/snpeff:5.1--hdfd78af_4"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/snpeff:5.1--hdfd78af_4",
-            cmd="snpEff -Xmx4g -csvStats {output.stats} {config[snpeff_db]} {input.vcf} > {output.vcf}"
-        )
+        "snpEff -Xmx4g -csvStats {output.stats} {config[snpeff_db]} {input.vcf} > {output.vcf}"
 
 
 rule unpack_annotation:
@@ -39,12 +37,13 @@ rule unpack_annotation:
         vcf = "results/{sample}.annotated.vcf"
     output:
         tsv = "results/{sample}.variants.tsv"
+    container:
+        "docker://quay.io/biocontainers/snpsift:5.4.0a--hdfd78af_0"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/snpsift:5.4.0a--hdfd78af_0",
-            cmd="""SnpSift extractFields {input.vcf} \
-            CHROM POS REF ALT \
-            "ANN[*].GENE" "ANN[*].EFFECT" "ANN[*].IMPACT" \
-            "ANN[*].HGVS_P" "ANN[*].HGVS_C" \
-            > {output.tsv}"""
-        )
+        """
+        SnpSift extractFields {input.vcf} \
+        CHROM POS REF ALT \
+        "ANN[*].GENE" "ANN[*].EFFECT" "ANN[*].IMPACT" \
+        "ANN[*].HGVS_P" "ANN[*].HGVS_C" \
+        > {output.tsv}
+        """

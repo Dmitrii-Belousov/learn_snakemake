@@ -3,11 +3,10 @@ rule bwa_index:
         config["genome"]
     output:
         multiext(config["genome"], ".amb", ".ann", ".bwt", ".pac", ".sa")
+    container: 
+        "docker://quay.io/biocontainers/bwa:0.7.17--hed695b0_7"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/bwa:0.7.17--hed695b0_7",
-            cmd="bwa index {input}"
-        )
+        "bwa index {input}"
 
 
 rule bwa_map:
@@ -23,22 +22,20 @@ rule bwa_map:
         "benchmarks/bwa/{sample}.tsv"
     log:
         "logs/bwa/{sample}.log"
+    container:
+        "docker://quay.io/biocontainers/bwa:0.7.17--hed695b0_7"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/bwa:0.7.17--hed695b0_7",
-            cmd="bwa mem {input.ref} {input.r1} {input.r2} > {output} -t {threads} 2> {log}"
-        )
+        "bwa mem {input.ref} {input.r1} {input.r2} > {output} -t {threads} 2> {log}"
 
 rule samtools_faidx:
     input:
         config["genome"]
     output:
         "resources/genome.fasta.fai"
+    container:
+        "docker://quay.io/biocontainers/samtools:1.15--h3843a85_0"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/samtools:1.15--h3843a85_0",
-            cmd="samtools faidx {input}"
-        )
+        "samtools faidx {input}"
 
 
 rule samtools_dict:
@@ -46,11 +43,10 @@ rule samtools_dict:
         config["genome"]
     output:
         "resources/genome.dict"
+    container: 
+        "docker://quay.io/biocontainers/samtools:1.15--h3843a85_0"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/samtools:1.15--h3843a85_0",
-            cmd="samtools dict {input} -o {output}"
-        )
+        "samtools dict {input} -o {output}"
 
 
 rule samtools_sort:
@@ -59,22 +55,20 @@ rule samtools_sort:
     output:
         "results/{sample}.sorted.bam"
     threads: 4
+    container:
+        "docker://quay.io/biocontainers/samtools:1.15--h3843a85_0"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/samtools:1.15--h3843a85_0",
-            cmd="samtools sort -o {output} {input} -@ {threads}"
-        )
+        "samtools sort -o {output} {input} -@ {threads}"
 
 rule samtools_idex:
     input:
         "results/{sample}.sorted.bam"
     output:
         "results/{sample}.sorted.bam.bai"
+    container:
+        "docker://quay.io/biocontainers/samtools:1.15--h3843a85_0"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/samtools:1.15--h3843a85_0",
-            cmd="samtools index {input}"
-        )
+        "samtools index {input}"
 
 
 rule samtools_stats:
@@ -83,8 +77,7 @@ rule samtools_stats:
         bai = "results/{sample}.sorted.bam.bai"
     output:
         "results/{sample}.stats"
+    container:
+        "docker://quay.io/biocontainers/samtools:1.15--h3843a85_0"
     shell:
-        get_docker_cmd(
-            image="quay.io/biocontainers/samtools:1.15--h3843a85_0",
-            cmd="samtools stats {input.bam} > {output}"
-        )
+        "samtools stats {input.bam} > {output}"
