@@ -24,7 +24,7 @@ rule get_snpeff_db:
         "docker://quay.io/biocontainers/snpeff:5.1--hdfd78af_4"
     shell:
         """
-        snpEff download -dataDir resources/snpeff_data -v GRCh38.86
+        snpEff -Xmx4g download -dataDir \"$PWD/resources/snpeff_data\" -v GRCh38.86
         """
 
 
@@ -43,7 +43,7 @@ rule snpeff_annotate_vcf:
         "docker://quay.io/biocontainers/snpeff:5.1--hdfd78af_4"
     shell:
         """
-        snpEff -dataDir resources/snpeff_data \
+        snpEff -dataDir \"$PWD/resources/snpeff_data\" \
         -Xmx4g -csvStats {output.stats} {config[snpeff_db]} \
         {input.vcf} > {output.vcf}
         """
