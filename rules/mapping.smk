@@ -11,12 +11,12 @@ rule bwa_index:
 
 rule bwa_map:
     input:
-        r1 = "results/{sample}_R1.filtered.fastq.gz",
-        r2 = "results/{sample}_R2.filtered.fastq.gz",
+        r1 = "results/{sample}/{sample}_R1.filtered.fastq.gz",
+        r2 = "results/{sample}/{sample}_R2.filtered.fastq.gz",
         ref = config["genome"],
         idx = multiext(config["genome"], ".amb", ".ann", ".bwt", ".pac", ".sa")
     output:
-        "results/{sample}.sam"
+        "results/{sample}/{sample}.sam"
     threads: 4
     benchmark:
         "benchmarks/bwa/{sample}.tsv"
@@ -51,9 +51,9 @@ rule samtools_dict:
 
 rule samtools_sort:
     input:
-        "results/{sample}.sam"
+        "results/{sample}/{sample}.sam"
     output:
-        "results/{sample}.sorted.bam"
+        "results/{sample}/{sample}.sorted.bam"
     threads: 4
     container:
         "docker://quay.io/biocontainers/samtools:1.15--h3843a85_0"
@@ -62,9 +62,9 @@ rule samtools_sort:
 
 rule samtools_idex:
     input:
-        "results/{sample}.sorted.bam"
+        "results/{sample}/{sample}.sorted.bam"
     output:
-        "results/{sample}.sorted.bam.bai"
+        "results/{sample}/{sample}.sorted.bam.bai"
     container:
         "docker://quay.io/biocontainers/samtools:1.15--h3843a85_0"
     shell:
@@ -73,10 +73,10 @@ rule samtools_idex:
 
 rule samtools_stats:
     input:
-        bam = "results/{sample}.sorted.bam",
-        bai = "results/{sample}.sorted.bam.bai"
+        bam = "results/{sample}/{sample}.sorted.bam",
+        bai = "results/{sample}/{sample}.sorted.bam.bai"
     output:
-        "results/{sample}.stats"
+        "results/{sample}/{sample}.stats"
     container:
         "docker://quay.io/biocontainers/samtools:1.15--h3843a85_0"
     shell:

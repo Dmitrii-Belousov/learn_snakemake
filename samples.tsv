@@ -1,5 +1,2 @@
-sample  fq1 fq2
-test    data/test_R1.fastq.gz   data/test_R2.fastq.gz
-test_rep2    data/test_rep2_R1.fastq.gz   data/test_rep2_R2.fastq.gz
-test_rep3    data/test_rep3_R1.fastq.gz   data/test_rep3_R2.fastq.gz
-test_rep4    data/test_rep4_R1.fastq.gz   data/test_rep4_R2.fastq.gz
+sample  SRA_ID
+test    SRXXXXXXX

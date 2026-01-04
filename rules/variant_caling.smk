@@ -1,12 +1,12 @@
 rule freebayes:
     input:
-        bam = "results/{sample}.sorted.bam",
-        bai = "results/{sample}.sorted.bam.bai",
+        bam = "results/{sample}/{sample}.sorted.bam",
+        bai = "results/{sample}/{sample}.sorted.bam.bai",
         ref = config["genome"],
         ref_fai = "resources/genome.fasta.fai"
     threads: 1
     output:
-        "results/{sample}.vcf"
+        "results/{sample}/{sample}.vcf"
     log:
         "logs/freebayes/{sample}.log"
     benchmark:
@@ -31,11 +31,11 @@ rule get_snpeff_db:
 
 rule snpeff_annotate_vcf:
     input:
-        vcf = "results/{sample}.vcf",
+        vcf = "results/{sample}/{sample}.vcf",
         db = "resources/snpeff_data/GRCh38.86"
     output:
-        vcf = "results/{sample}.annotated.vcf",
-        stats = "results/{sample}.snpeff.csv"
+        vcf = "results/{sample}/{sample}.annotated.vcf",
+        stats = "results/{sample}/{sample}.snpeff.csv"
     threads: 1
     resources:
         mem_mb = 4096
@@ -51,9 +51,9 @@ rule snpeff_annotate_vcf:
 
 rule unpack_annotation:
     input:
-        vcf = "results/{sample}.annotated.vcf"
+        vcf = "results/{sample}/{sample}.annotated.vcf"
     output:
-        tsv = "results/{sample}.variants.tsv"
+        tsv = "results/{sample}/{sample}.variants.tsv"
     container:
         "docker://quay.io/biocontainers/snpsift:5.4.0a--hdfd78af_0"
     shell:
