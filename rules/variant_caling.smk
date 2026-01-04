@@ -15,11 +15,24 @@ rule freebayes:
         "docker://quay.io/biocontainers/freebayes:1.3.6--hb089aa1_0"
     shell:
         "freebayes -f {input.ref} {input.bam} > {output}"
+    
+
+rule get_snpeff_db:
+    output:
+        directory("resources/snpeff_data/GRCh38.86")
+    container:
+        "docker://quay.io/biocontainers/snpeff:5.1--hdfd78af_4"
+    shell:
+        """
+        snpEff download -dataDir resources/snpeff_data -v GRCh38.86
+        """
+
 
 
 rule snpeff_annotate_vcf:
     input:
         vcf = "results/{sample}.vcf"
+        db = "resources/snpeff_data/GRCh38.86"
     output:
         vcf = "results/{sample}.annotated.vcf",
         stats = "results/{sample}.snpeff.csv"
@@ -30,8 +43,9 @@ rule snpeff_annotate_vcf:
         "docker://quay.io/biocontainers/snpeff:5.1--hdfd78af_4"
     shell:
         """
-        snpEff download -dataDir resources/snpeff_data -v GRCh38.86
-        snpEff -Xmx4g -csvStats {output.stats} {config[snpeff_db]} {input.vcf} > {output.vcf}
+        snpEff -dataDir resources/snpeff_data \
+        -Xmx4g -csvStats {output.stats} {config[snpeff_db]} \
+        {input.vcf} > {output.vcf}
         """
 
 
