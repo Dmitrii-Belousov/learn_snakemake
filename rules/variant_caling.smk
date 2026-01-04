@@ -31,7 +31,7 @@ rule get_snpeff_db:
 
 rule snpeff_annotate_vcf:
     input:
-        vcf = "results/{sample}.vcf"
+        vcf = "results/{sample}.vcf",
         db = "resources/snpeff_data/GRCh38.86"
     output:
         vcf = "results/{sample}.annotated.vcf",
