@@ -34,6 +34,6 @@ rule get_common_snp:
         tbi_path = "https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/common_all_20180418.vcf.gz.tbi"
     shell:
         """
-        wget -O {output.vcf} {vcf_path}
-        wget -O {output.tbi} {tbi_path}
+        wget -O {output.vcf} {params.vcf_path}
+        wget -O {output.tbi} {params.tbi_path}
         """
