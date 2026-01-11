@@ -39,10 +39,26 @@ rule get_snpeff_db:
         """
 
 
+rule filter_common_mutations:
+    input:
+        vcf = "results/{sample}/{sample}.filtered.vcf",
+        db = "resources/common_vcf/common_all_20180418.vcf.gz",
+        idx = "resources/common_vcf/common_all_20180418.vcf.gz.tbi"
+    output:
+        vcf = "results/{sample}/{sample}.somatic.vcf"
+    container:
+        "docker://quay.io/biocontainers/snpsift:5.4.0a--hdfd78af_0"
+    shell:
+        """
+        SnpSift annotate {input.db} {input.vcf} |
+        SnpSift filter '( ! exists ID )' > {output.vcf}
+        """
+
+
 
 rule snpeff_annotate_vcf:
     input:
-        vcf = "results/{sample}/{sample}.filtered.vcf",
+        vcf = "results/{sample}/{sample}.somatic.vcf",
         db = "resources/snpeff_data/GRCh38.86"
     output:
         vcf = "results/{sample}/{sample}.annotated.vcf",
