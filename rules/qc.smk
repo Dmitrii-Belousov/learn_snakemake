@@ -19,8 +19,12 @@ rule multiqc:
         expand("results/{sample}/{sample}.stats", sample=samples_list),
         expand("results/{sample}/{sample}.snpeff.csv", sample=samples_list)
     output:
-        "results/multiqc_report.html"
+        html="results/multiqc_report.html",
+        archive="results/multiqc_data.html"
     container:
         "docker://staphb/multiqc:1.8"
     shell:
-        "multiqc results/ -n multiqc_report.html -o results/ -f"
+        """
+        multiqc {input} -n multiqc_report.html -o . -f
+        tar -czf {output.archive} multiqc_report_data/
+        """

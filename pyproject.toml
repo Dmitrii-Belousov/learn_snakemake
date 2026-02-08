@@ -1,7 +1,7 @@
 [project]
 name = "learn-snakemake"
 version = "0.1.0"
-description = "Add your description here"
+description = "Snakemake workflow for variant calling from NGS data with Azure Batch support"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -12,4 +12,5 @@ dependencies = [
     "pandas>=3.0.0",
     "snakemake>=9.16.3",
     "snakemake-executor-plugin-azure-batch>=0.3.0",
+    "snakemake-storage-plugin-azure>=0.4.4",
 ]

@@ -1,2 +1,4 @@
 sample  SRA_ID
-test    SRXXXXXXX
+breast_tumor_1  SRR22868190
+breast_tumor_2  SRR22868194
+breast_tumor_3  SRR22868195
