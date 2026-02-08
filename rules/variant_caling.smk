@@ -15,6 +15,17 @@ rule freebayes:
         "docker://quay.io/biocontainers/freebayes:1.3.6--hb089aa1_0"
     shell:
         "freebayes -f {input.ref} {input.bam} > {output}"
+
+
+rule filter_vcf:
+    input:
+        "results/{sample}/{sample}.vcf"
+    output:
+        "results/{sample}/{sample}.filtered.vcf"
+    container:
+        "docker://quay.io/biocontainers/bcftools:1.16--haef29d1_2"
+    shell:
+        "bcftools filter -i 'QUAL>20 && DP>10' {input} > {output}"
     
 
 rule get_snpeff_db:
@@ -28,10 +39,26 @@ rule get_snpeff_db:
         """
 
 
+rule filter_common_mutations:
+    input:
+        vcf = "results/{sample}/{sample}.filtered.vcf",
+        db = "resources/common_vcf/common_all_20180418.vcf.gz",
+        idx = "resources/common_vcf/common_all_20180418.vcf.gz.tbi"
+    output:
+        vcf = "results/{sample}/{sample}.somatic.vcf"
+    container:
+        "docker://quay.io/biocontainers/snpsift:5.4.0a--hdfd78af_0"
+    shell:
+        """
+        SnpSift annotate {input.db} {input.vcf} |
+        SnpSift filter '( ! exists ID )' > {output.vcf}
+        """
+
+
 
 rule snpeff_annotate_vcf:
     input:
-        vcf = "results/{sample}/{sample}.vcf",
+        vcf = "results/{sample}/{sample}.somatic.vcf",
         db = "resources/snpeff_data/GRCh38.86"
     output:
         vcf = "results/{sample}/{sample}.annotated.vcf",

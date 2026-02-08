@@ -24,3 +24,16 @@ rule download_sra:
         gzip results/{wildcards.sample}/{wildcards.sample}_R1.fastq
         gzip results/{wildcards.sample}/{wildcards.sample}_R2.fastq
         """
+
+rule get_common_snp:
+    output:
+        vcf = "resources/common_vcf/common_all_20180418.vcf.gz",
+        tbi = "resources/common_vcf/common_all_20180418.vcf.gz.tbi"
+    params:
+        vcf_path = "https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/common_all_20180418.vcf.gz",
+        tbi_path = "https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/common_all_20180418.vcf.gz.tbi"
+    shell:
+        """
+        wget -O {output.vcf} {params.vcf_path}
+        wget -O {output.tbi} {params.tbi_path}
+        """
