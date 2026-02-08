@@ -1,0 +1,15 @@
+[project]
+name = "learn-snakemake"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "azure-batch>=14.2.0",
+    "azure-identity>=1.25.1",
+    "azure-storage-blob>=12.28.0",
+    "jupyter>=1.1.1",
+    "pandas>=3.0.0",
+    "snakemake>=9.16.3",
+    "snakemake-executor-plugin-azure-batch>=0.3.0",
+]
